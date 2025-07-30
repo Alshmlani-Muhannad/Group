@@ -1,25 +1,3 @@
-// Wait for DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // Mobile Menu Functionality
-    initializeMobileMenu();
-    
-    // Scroll Animations
-    initializeScrollAnimations();
-    
-    // Counter Animations
-    initializeCounterAnimations();
-    
-    // Smooth Scrolling
-    initializeSmoothScrolling();
-    
-    // Header Background Change
-    initializeHeaderScroll();
-    
-    // Form Enhancements
-    initializeFormEnhancements();
-});
-
 // Mobile Menu Toggle Functions
 function initializeMobileMenu() {
     const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -43,4 +21,23 @@ function initializeMobileMenu() {
     }
     
     // Close mobile menu when clicking on links
-    const mobileMenuLinks = mobileMenu?.querySelectorAll('
+    const mobileMenuLinks = mobileMenu?.querySelectorAll('a');
+    if (mobileMenuLinks) {
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mobileMenu.classList.remove('open');
+                document.body.style.overflow = 'auto'; // Restore scrolling
+            });
+        });
+    }
+    
+    // Close menu when clicking outside of it
+    document.addEventListener('click', function(event) {
+        if (mobileMenu.classList.contains('open') && 
+            !mobileMenu.contains(event.target) && 
+            event.target !== mobileMenuButton) {
+            mobileMenu.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+    });
+}
