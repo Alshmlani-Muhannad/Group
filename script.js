@@ -241,7 +241,17 @@ function initializeFormEnhancements() {
         });
     }
 }
+// script.js
+import { initializeLanguageSwitcher } from './language.js';
 
+document.addEventListener('DOMContentLoaded', function() {
+  initializeLanguageSwitcher();
+  
+  // Rest of your existing initialization code
+  initializeMobileMenu();
+  initializeScrollAnimations();
+  // ... etc
+});
 // Add error class style dynamically
 document.head.insertAdjacentHTML('beforeend', `
     <style>

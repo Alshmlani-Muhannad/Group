@@ -222,6 +222,27 @@ textarea:focus {
     transform: translateY(-5px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
+/* styles.css */
+/* RTL specific styles */
+[dir="rtl"] {
+  /* Adjustments for RTL layout */
+  .ml-4 {
+    margin-left: 0;
+    margin-right: 1rem;
+  }
+  
+  /* Any other RTL-specific adjustments */
+}
+
+/* Language switcher button */
+#language-switcher {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#language-switcher:hover {
+  background-color: #f0f0f0;
+}
 
 /* Icon Animations */
 .fas, .fab {
