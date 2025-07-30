@@ -1,0 +1,321 @@
+/* Custom CSS Variables */
+:root {
+    --primary-blue: #007BFF;
+    --success-green: #00C49A;
+    --warning-orange: #FF8C00;
+    --dark-text: #1A202C;
+    --light-bg: #F8F9FA;
+}
+
+/* Global Styles */
+* {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--light-bg);
+    color: var(--dark-text);
+    direction: ltr;
+}
+
+/* Font Classes */
+.font-cairo {
+    font-family: 'Cairo', sans-serif;
+}
+
+/* Color Classes */
+.bg-primary {
+    background-color: var(--primary-blue);
+}
+
+.text-primary {
+    color: var(--primary-blue);
+}
+
+.bg-success {
+    background-color: var(--success-green);
+}
+
+.text-success {
+    color: var(--success-green);
+}
+
+.bg-warning {
+    background-color: var(--warning-orange);
+}
+
+.text-warning {
+    color: var(--warning-orange);
+}
+
+/* Animation Classes */
+.fade-in-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-out;
+}
+
+.fade-in-up.animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Gradient Background */
+.hero-gradient {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #0056b3 100%);
+}
+
+/* Custom Button Styles */
+.btn-primary {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 123, 255, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+/* Status Indicators */
+.status-active {
+    background-color: var(--success-green);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-coming-soon {
+    background-color: var(--warning-orange);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+
+.mobile-menu.open {
+    transform: translateX(0);
+}
+
+/* Counter Animation */
+.counter {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--primary-blue);
+}
+
+/* Header Background Transition */
+header.scrolled {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .counter {
+        font-size: 2rem;
+    }
+    
+    .hero-gradient h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-gradient p {
+        font-size: 1.125rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .hero-gradient h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-gradient p {
+        font-size: 1rem;
+    }
+    
+    .counter {
+        font-size: 1.75rem;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-blue);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0056b3;
+}
+
+/* Focus States for Accessibility */
+.btn-primary:focus,
+input:focus,
+textarea:focus {
+    outline: 2px solid var(--primary-blue);
+    outline-offset: 2px;
+}
+
+/* Link Hover Effects */
+a {
+    transition: color 0.3s ease;
+}
+
+/* Form Input Enhancements */
+input[type="text"],
+input[type="email"],
+textarea {
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+}
+
+/* Card Hover Effects Enhancement */
+.bg-white.rounded-xl.shadow-lg {
+    transition: all 0.3s ease;
+}
+
+.bg-white.rounded-xl.shadow-lg:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Icon Animations */
+.fas, .fab {
+    transition: transform 0.3s ease;
+}
+
+.social-icon:hover .fas,
+.social-icon:hover .fab {
+    transform: scale(1.1);
+}
+
+/* Loading Animation for Counters */
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.counter.animate {
+    animation: countUp 0.6s ease-out;
+}
+
+/* Enhanced Mobile Menu */
+.mobile-menu {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+/* Bounce Animation Enhancement */
+@keyframes bounceCustom {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0) translateX(-50%);
+    }
+    40% {
+        transform: translateY(-10px) translateX(-50%);
+    }
+    60% {
+        transform: translateY(-5px) translateX(-50%);
+    }
+}
+
+.animate-bounce {
+    animation: bounceCustom 2s infinite;
+}
+
+/* Section Spacing */
+section {
+    position: relative;
+}
+
+/* Enhanced Shadow Effects */
+.shadow-lg {
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Gradient Text Effect */
+.gradient-text {
+    background: linear-gradient(135deg, var(--primary-blue), var(--success-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Enhanced Button States */
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 5px 10px rgba(0, 123, 255, 0.3);
+}
+
+/* Custom Container Max Width */
+.container {
+    max-width: 1200px;
+}
+
+/* Print Styles */
+@media print {
+    .mobile-menu,
+    .fixed,
+    .animate-bounce {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .hero-gradient {
+        background: white !important;
+        color: black !important;
+    }
+}
