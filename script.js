@@ -1,5 +1,10 @@
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Language Switcher (will be imported from language.js)
+    if (typeof initializeLanguageSwitcher === 'function') {
+        initializeLanguageSwitcher();
+    }
+    
     // Mobile Menu Functionality
     initializeMobileMenu();
     
@@ -18,7 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form Enhancements
     initializeFormEnhancements();
     
-    // Add any additional initialization here
+    // Add dynamic error styles
+    addErrorStyles();
 });
 
 // Mobile Menu Toggle Functions
@@ -26,6 +32,7 @@ function initializeMobileMenu() {
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
     const closeMenu = document.getElementById('close-menu');
+    const languageSwitcherMobile = document.getElementById('language-switcher-mobile');
     
     // Open mobile menu
     if (mobileMenuButton) {
@@ -44,11 +51,11 @@ function initializeMobileMenu() {
         });
     }
     
-    // Close mobile menu when clicking on links
-    const mobileMenuLinks = mobileMenu?.querySelectorAll('a');
-    if (mobileMenuLinks) {
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', function() {
+    // Close mobile menu when clicking on links or language switcher
+    const mobileMenuItems = mobileMenu?.querySelectorAll('a, #language-switcher-mobile');
+    if (mobileMenuItems) {
+        mobileMenuItems.forEach(item => {
+            item.addEventListener('click', function() {
                 mobileMenu.classList.remove('open');
                 document.body.style.overflow = 'auto';
             });
@@ -57,9 +64,10 @@ function initializeMobileMenu() {
     
     // Close menu when clicking outside
     document.addEventListener('click', function(e) {
-        if (mobileMenu.classList.contains('open') && 
+        if (mobileMenu?.classList.contains('open') && 
             !mobileMenu.contains(e.target) && 
-            e.target !== mobileMenuButton) {
+            e.target !== mobileMenuButton &&
+            e.target !== languageSwitcherMobile) {
             mobileMenu.classList.remove('open');
             document.body.style.overflow = 'auto';
         }
@@ -83,19 +91,24 @@ function initializeScrollAnimations() {
         });
     };
     
+    // Use requestAnimationFrame for smoother performance
+    const throttledCheck = () => {
+        requestAnimationFrame(checkVisibility);
+    };
+    
     // Initial check
-    checkVisibility();
+    throttledCheck();
     
-    // Check on scroll
-    window.addEventListener('scroll', checkVisibility);
-    
-    // Check on resize
-    window.addEventListener('resize', checkVisibility);
+    // Check on scroll with throttling
+    window.addEventListener('scroll', throttledCheck);
+    window.addEventListener('resize', throttledCheck);
 }
 
 // Counter Animation Functions
 function initializeCounterAnimations() {
     const counters = document.querySelectorAll('.counter');
+    if (!counters.length) return;
+    
     const speed = 200;
     let hasAnimated = false;
     
@@ -118,7 +131,7 @@ function initializeCounterAnimations() {
                     current += increment;
                     if (current < target) {
                         counter.textContent = Math.ceil(current);
-                        setTimeout(updateCounter, 1);
+                        requestAnimationFrame(updateCounter);
                     } else {
                         counter.textContent = target;
                     }
@@ -129,17 +142,31 @@ function initializeCounterAnimations() {
         }
     };
     
-    // Initial check
-    animateCounters();
+    // Use IntersectionObserver for better performance
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounters();
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
     
-    // Check on scroll
-    window.addEventListener('scroll', animateCounters);
+    const countersSection = document.querySelector('#about');
+    if (countersSection) {
+        observer.observe(countersSection);
+    }
 }
 
 // Smooth Scrolling Functions
 function initializeSmoothScrolling() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
+            // Skip if it's a language switcher
+            if (this.id === 'language-switcher' || this.id === 'language-switcher-mobile') {
+                return;
+            }
+            
             e.preventDefault();
             
             const targetId = this.getAttribute('href');
@@ -149,7 +176,7 @@ function initializeSmoothScrolling() {
             if (targetElement) {
                 // Close mobile menu if open
                 const mobileMenu = document.getElementById('mobile-menu');
-                if (mobileMenu.classList.contains('open')) {
+                if (mobileMenu?.classList.contains('open')) {
                     mobileMenu.classList.remove('open');
                     document.body.style.overflow = 'auto';
                 }
@@ -170,9 +197,10 @@ function initializeSmoothScrolling() {
 // Header Scroll Functions
 function initializeHeaderScroll() {
     const header = document.querySelector('header');
-    const heroSection = document.querySelector('#home');
+    if (!header) return;
     
-    if (!heroSection) return;
+    // Use requestAnimationFrame for smoother performance
+    let ticking = false;
     
     const updateHeader = () => {
         if (window.scrollY > 100) {
@@ -180,84 +208,97 @@ function initializeHeaderScroll() {
         } else {
             header.classList.remove('scrolled');
         }
+        ticking = false;
+    };
+    
+    const requestTick = () => {
+        if (!ticking) {
+            requestAnimationFrame(updateHeader);
+            ticking = true;
+        }
     };
     
     // Initial check
     updateHeader();
     
-    // Check on scroll
-    window.addEventListener('scroll', updateHeader);
+    // Check on scroll with throttling
+    window.addEventListener('scroll', requestTick);
 }
 
 // Form Enhancement Functions
 function initializeFormEnhancements() {
     const contactForm = document.querySelector('#contact form');
+    if (!contactForm) return;
     
-    if (contactForm) {
-        // Add input validation
-        const inputs = contactForm.querySelectorAll('input, textarea');
-        inputs.forEach(input => {
-            input.addEventListener('blur', function() {
-                if (this.value.trim() === '') {
-                    this.classList.add('error');
-                } else {
-                    this.classList.remove('error');
-                }
-            });
-        });
-        
-        // Form submission
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            let isValid = true;
-            const formData = {};
-            
-            // Validate inputs
-            inputs.forEach(input => {
-                if (input.value.trim() === '') {
-                    input.classList.add('error');
-                    isValid = false;
-                } else {
-                    formData[input.name] = input.value.trim();
-                }
-            });
-            
-            if (isValid) {
-                // Here you would typically send the form data to a server
-                console.log('Form submitted:', formData);
-                
-                // Show success message
-                alert('Thank you for your message! We will get back to you soon.');
-                
-                // Reset form
-                contactForm.reset();
-                
-                // Remove error classes
-                inputs.forEach(input => input.classList.remove('error'));
+    // Add input validation
+    const inputs = contactForm.querySelectorAll('input, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.classList.add('error');
             } else {
-                alert('Please fill in all required fields.');
+                this.classList.remove('error');
             }
         });
+    });
+    
+    // Form submission
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        let isValid = true;
+        const formData = {};
+        
+        // Validate inputs
+        inputs.forEach(input => {
+            if (input.value.trim() === '') {
+                input.classList.add('error');
+                isValid = false;
+            } else {
+                formData[input.name] = input.value.trim();
+            }
+        });
+        
+        if (isValid) {
+            // Here you would typically send the form data to a server
+            console.log('Form submitted:', formData);
+            
+            // Show success message
+            alert('Thank you for your message! We will get back to you soon.');
+            
+            // Reset form
+            contactForm.reset();
+            
+            // Remove error classes
+            inputs.forEach(input => input.classList.remove('error'));
+        } else {
+            alert('Please fill in all required fields.');
+        }
+    });
+}
+
+// Add dynamic error styles
+function addErrorStyles() {
+    if (!document.querySelector('style[data-dynamic-error-styles]')) {
+        document.head.insertAdjacentHTML('beforeend', `
+            <style data-dynamic-error-styles>
+                input.error, textarea.error {
+                    border-color: #ff4444 !important;
+                    box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2) !important;
+                }
+            </style>
+        `);
     }
 }
-// script.js
-import { initializeLanguageSwitcher } from './language.js';
 
-document.addEventListener('DOMContentLoaded', function() {
-  initializeLanguageSwitcher();
-  
-  // Rest of your existing initialization code
-  initializeMobileMenu();
-  initializeScrollAnimations();
-  // ... etc
-});
-// Add error class style dynamically
-document.head.insertAdjacentHTML('beforeend', `
-    <style>
-        input.error, textarea.error {
-            border-color: #ff4444 !important;
-            box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2) !important;
-        }
-    </style>
-`);
+// Export functions for module usage if needed
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        initializeMobileMenu,
+        initializeScrollAnimations,
+        initializeCounterAnimations,
+        initializeSmoothScrolling,
+        initializeHeaderScroll,
+        initializeFormEnhancements
+    };
+}
